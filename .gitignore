@@ -1,2 +1,8 @@
 .vagrant
 .lh
+*.pem
+*.csr
+*.crt
+*.cnf
+docker_join_*
+.DS_Store

@@ -1,4 +1,7 @@
 # Esercizi
+```
+vagrant up --provider parallels --no-parallel
+```
 
 ## Esercizio 1
 1. collegarsi via ssh tramite vscode (edit di .ssh/config)

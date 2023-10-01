@@ -19,51 +19,6 @@ curl -sSL https://get.docker.com/ | sh
 sudo usermod -aG docker vagrant
 SCRIPT
 
-$swarm_init_script = <<SCRIPT
-hostname=$(hostname)
-hostname=${hostname::-2}
-
-set +x
-function imInSwarm(){
-  name=$1
-  docker node ls --format "{{.Hostname}}" | grep $name > /dev/null
-  echo $?
-}
-#Sono il leader? se non c'è lo eleggo
-if [ $(hostname) == "manager01" ]; then
-  echo "vorrei essere leader"
-  iminswarm=$(imInSwarm "manager01")
-  if [[ $iminswarm != 0 ]]; then
-    echo "non sono manager, lo divento"
-    ip_addr=$(hostname -I | awk '{print $2}')
-    docker swarm init --listen-addr ${ip_addr}:2377 --advertise-addr ${ip_addr}:2377 | grep SWM | sed 's/^[ \t]*//g' >  /cache/docker_join_worker.sh
-    docker swarm join-token manager | grep SWM | sed 's/^[ \t]*//g' >  /cache/docker_join_manager.sh
-  else
-    echo "lo sono già"
-  fi
-else
-  # sono candidabile? se si mi candido
-  if [ $hostname == "manager" ]; then
-    iminswarm=$(imInSwarm $(hostname))
-    if [[ $iminswarm != 0 ]]; then
-        echo "mi aggrego ai boss"
-        source /cache/docker_join_manager.sh
-    else
-        echo "sono già in lista, sarà re"
-    fi
-  fi
-  if [ $hostname == "worker" ]; then
-    status=$(docker info --format '{{.Swarm.LocalNodeState}}')
-    if [[ $status != "active" ]]; then
-        echo "divento ape operaia"   
-        source /cache/docker_join_worker.sh
-    else
-        echo "ho già un lavoro"
-    fi
-  fi
-fi
-SCRIPT
-
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #Common setup
   config.vm.box = BOX_NAME
@@ -86,8 +41,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
           manager.vm.network :forwarded_port, guest: 5000, host: 5050
           manager.vm.network :forwarded_port, guest: 9000, host: 9090
         end
-        #config.vm.provision "shell", inline: $swarm_init_script, privileged: true
         config.vm.provision "shell", path: 'setup-cluster-swarm.sh', privileged: true
+        config.vm.provision "shell", path: 'setupsh/enableRemoteTLS.sh', privileged: true
       end
   end
 
@@ -96,7 +51,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vm.define "worker0#{i}" do |worker|
           worker.vm.network :private_network, ip: "#{WORKER_IP}#{i}"
           worker.vm.hostname = "worker0#{i}"
-          config.vm.provision "shell", inline: $swarm_init_script, privileged: true
+          config.vm.provision "shell", path: 'setup-cluster-swarm.sh', privileged: true
       end
   end
 end
