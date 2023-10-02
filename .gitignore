@@ -6,3 +6,4 @@
 *.cnf
 docker_join_*
 .DS_Store
+.node_modules
