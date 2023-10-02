@@ -23,3 +23,5 @@ docker service create \
   --publish published=8086,target=80 \
   --mode global \
   nginx
+
+netstat -lntp | grep dockerd
