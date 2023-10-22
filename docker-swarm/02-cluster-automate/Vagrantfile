@@ -35,14 +35,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       config.vm.define "manager0#{i}" do |manager|
         manager.vm.network :private_network, ip: "#{MANAGER_IP}#{i}"
         manager.vm.hostname = "manager0#{i}"
-        if i == 1
-          #Only configure port to host for Manager01
-          manager.vm.network :forwarded_port, guest: 8080, host: 8088
-          manager.vm.network :forwarded_port, guest: 5000, host: 5050
-          manager.vm.network :forwarded_port, guest: 9000, host: 9090
-        end
         config.vm.provision "shell", path: 'setup-cluster-swarm.sh', privileged: true
+        config.vm.provision "shell", path: 'setupsh/enableRemote.sh', privileged: true
         config.vm.provision "shell", path: 'setupsh/enableRemoteTLS.sh', privileged: true
+
       end
   end
 
