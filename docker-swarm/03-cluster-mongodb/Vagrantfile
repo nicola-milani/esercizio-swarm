@@ -1,13 +1,14 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 BOX_NAME = "bento/ubuntu-22.04-arm64"
+BOX_VERSION = '202306.28.0'
 #config.vm.box = "generic/ubuntu2204"
 #config.vm.box_version = "4.3.2"
 MEMORY = "2048"
 CPUS = 2
 MANAGERS = 3
 MANAGER_IP = "172.20.20.1"
-WORKERS = 2
+WORKERS = 5
 WORKER_IP = "172.20.20.10"
 VAGRANTFILE_API_VERSION = "2"
 
@@ -22,6 +23,7 @@ SCRIPT
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #Common setup
   config.vm.box = BOX_NAME
+  config.vm.box_version = BOX_VERSION
   config.vm.synced_folder ".", "/vagrant"
   config.vm.provision "shell",inline: $install_docker_script, privileged: true
   config.vm.boot_timeout = 800
@@ -37,7 +39,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         manager.vm.hostname = "manager0#{i}"
         config.vm.provision "shell", path: 'setup-cluster-swarm.sh', privileged: true
         config.vm.provision "shell", path: 'setupsh/enableRemote.sh', privileged: true
-       # config.vm.provision "shell", path: 'setupsh/enableRemoteTLS.sh', privileged: true
       end
   end
 

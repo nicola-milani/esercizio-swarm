@@ -1,0 +1,20 @@
+echo "usermongo" | docker secret create MONGODB_USERNAME -
+pbxsp9zrgjpr08kxjf7nv9per
+echo "password_super_complex" | docker secret create MONGODB_PASSWORD -
+k4xnxmz2ctq3zo8kl37afk2do
+echo "example123456" | docker secret create MONGO_DB_KEYFILE -
+xdr83vhpqzwof3aknpqid74sc
+
+docker node ls -q | xargs docker node inspect \
+  -f '{{ .ID }} [{{ .Description.Hostname }}]: {{ .Spec.Labels }}'
+
+vagrant ssh -c "hostname -I | cut -d' ' -f2" manager01
+
+curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/nodes | jq .[0]
+
+
+#
+#https://vishalrana9915.medium.com/adding-authorization-to-replica-sets-in-mongodb-37620c4f964e
+#https://www.mongodb.com/docs/manual/reference/connection-string/
+#https://github.com/minhhungit/mongodb-cluster-docker-compose/blob/master/docker-compose.yml
+#https://www.codeproject.com/Tips/5336563/Run-Database-and-GUI-Clients-in-Docker
