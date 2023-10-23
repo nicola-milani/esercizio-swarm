@@ -18,6 +18,10 @@ vagrant up --provider parallels --no-parallel
 ```
 docker --tlsverify --tlscacert=folderTmp/clientTLS/ca.pem --tlscert=folderTmp/clientTLS/cert.pem --tlskey=folderTmp/clientTLS/key.pem -H=node1:2376
 ```
+
+```
+docker context create node1tls --description "esempio contesto tls" --docker "host=tcp://node1:2375,ca=/Users/nicola/clientdocker/ca.pem,cert=/Users/nicola/clientdocker/cert.pem,key=/Users/nicola/clientdocker/key.pem"
+```
 6. cosa succede se provo a contattare l'host con un nome diverso da quello contenuto nel certificato?
 
 ```
