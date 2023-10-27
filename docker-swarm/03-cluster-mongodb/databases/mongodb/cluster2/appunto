@@ -18,3 +18,4 @@ curl --silent -XGET --unix-socket /var/run/docker.sock http://localhost/nodes | 
 #https://www.mongodb.com/docs/manual/reference/connection-string/
 #https://github.com/minhhungit/mongodb-cluster-docker-compose/blob/master/docker-compose.yml
 #https://www.codeproject.com/Tips/5336563/Run-Database-and-GUI-Clients-in-Docker
+https://betterprogramming.pub/zero-downtime-deployment-with-docker-swarm-d84d8d9d9a14
